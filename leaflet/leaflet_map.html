@@ -22,7 +22,7 @@
 
     <style>
         #mapid {
-            height: 500px;
+            height: 800px;
         }
     </style>
 
@@ -35,25 +35,76 @@
 
     <div class="container-fluid">
 
-        <nav class="navbar fixed-top navbar-light bg-light">
-            <div class="navbar-brand">
-                Bootstrap Map App
-            </div>
-        </nav>
+
 
         <div class="jumbotron">
+                <nav class="navbar navbar-light bg-light">
+                        <p id="clickCoords" class="navbar-brand">Click the map to create a marker</p>
+                    </nav>
             <div class="row">
                 <div class="col-sm-3">
                     <!-- sidebar -->
 
-                    <p>This is the sidebar</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Comment Form</h5>
+
+
+                            <form action="">
+                                <div class="form-group">
+                                    <label for="inputName">Name</label>
+                                    <input type="text" class="form-control" id="inputName" placeholder="Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputPhone">Phone</label>
+                                    <input type="text" class="form-control" id="inputPhone" placeholder="xxx-xxx-xxxx">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="envCheck1">Checkbox option 1</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                        <label class="form-check-label" for="envCheck2">Checkbox option 2</label>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="inputForm">Comment</label>
+                                    <textarea class="form-control" id="inputForm" placeholder="Enter your comment here" style="height: 240px;"></textarea>
+                                </div>
+
+                                <button id="enableDraw" class="btn btn-primary">Draw Point</button>
+
+                                <button type="submit" class="btn btn-primary">Submit</button>
+
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-9">
                     <!-- map window -->
 
                     <div id="mapid"></div>
 
+
+
+
+
                     <script>
+
                         var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 
                         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -62,15 +113,32 @@
                             id: 'mapbox.streets',
                             accessToken: 'pk.eyJ1IjoiYXV0aGFsaWMiLCJhIjoiSHppSDJlWSJ9.h8QdzKDNKE1p_XDuzIBoSg'
                         }).addTo(mymap);
-                    </script>
 
+
+                        var commentMarker;
+
+                        function onMarkerMove(e) {
+
+                            $('#clickCoords').html("Your marker moved to " + e.latlng);
+                        };
+
+                        function onMapClick(e) {
+                            $('#clickCoords').html("Your marker is at " + e.latlng);
+                            
+                            commentMarker = new L.marker(e.latlng, {draggable:true});
+                            mymap.addLayer(commentMarker);
+
+                            mymap.off('click');
+
+                            commentMarker.on('move', onMarkerMove);
+                        };
+
+                        mymap.on('click', onMapClick);
+
+                    </script>
                 </div>
             </div>
-            <nav class="navbar fixed-bottom navbar-light bg-light">
-                <div class="navbar-brand">Fixed bottom</div>
-            </nav>
         </div>
-    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -79,6 +147,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
 </body>
 
 </html>
